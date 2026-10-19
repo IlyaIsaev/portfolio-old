@@ -1,0 +1,199 @@
+---
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getContacts, getProfile } from "../data/profile";
+import { getLocale } from "../i18n/locale";
+import { UI } from "../i18n/ui";
+import "../styles/global.css";
+
+type Props = {
+  readonly title: string;
+  readonly description: string;
+};
+
+const { title, description } = Astro.props;
+
+const locale = getLocale(Astro.currentLocale);
+const ui = UI[locale];
+const profile = getProfile(locale);
+const contacts = getContacts(locale);
+const homeUrl = getRelativeLocaleUrl(locale);
+const nextLocale = locale === "en" ? "ru" : "en";
+const nextLocaleUrl = getRelativeLocaleUrl(nextLocale);
+
+const MENU = [
+  { href: `${homeUrl}#about`, label: ui.nav.about },
+  { href: `${homeUrl}#skills`, label: ui.nav.skills },
+  { href: `${homeUrl}#experience`, label: ui.nav.experience },
+  { href: `${homeUrl}#education`, label: ui.nav.education },
+  { href: `${homeUrl}#contacts`, label: ui.nav.contacts },
+] as const;
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<!doctype html>
+<html lang={locale} class="scroll-pt-14">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/icons/internet_options-0.png" />
+    <title>{title}</title>
+  </head>
+  <body class="graph-paper min-h-dvh font-sans text-black">
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-2 focus:py-1"
+    >
+      {ui.skipToContent}
+    </a>
+    <div class="mx-auto flex min-h-dvh max-w-5xl flex-col px-3 py-3">
+      <header class="mb-3">
+        <div class="grid items-center gap-y-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-4">
+          <div class="flex min-w-0 items-center gap-x-3 text-left">
+            <a
+              href={homeUrl}
+              aria-label={ui.home}
+              title={ui.home}
+              class="shrink-0"
+            >
+              <Image
+                src="/icons/internet_options_old_e-0.png"
+                alt=""
+                width={72}
+                height={72}
+                loading="eager"
+                class="size-[72px] pixelated"
+              />
+            </a>
+            <div class="min-w-0">
+              <p class="name-outline text-3xl leading-none font-bold text-navy uppercase sm:text-5xl">
+                {profile.name}
+              </p>
+              <p class="mt-1 text-sm font-bold tracking-wide text-black uppercase sm:text-lg">
+                {profile.title}
+              </p>
+              <p class="mt-1 font-bold text-tagline">{profile.tagline}</p>
+            </div>
+          </div>
+          <ul class="flex flex-wrap items-start justify-evenly gap-x-4 gap-y-3 lg:flex-nowrap lg:justify-end lg:gap-x-5">
+            {contacts.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="flex flex-col items-center gap-1 text-center text-xs leading-tight text-link visited:text-link"
+                  target={item.kind === "external" ? "_blank" : undefined}
+                  rel={
+                    item.kind === "external" ? "noopener noreferrer" : undefined
+                  }
+                  download={
+                    item.kind === "download" ? item.download : undefined
+                  }
+                >
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={32}
+                    height={32}
+                    loading="eager"
+                    class="size-8 pixelated"
+                  />
+                  <span class="underline">
+                    {item.kind === "mail"
+                      ? ui.email
+                      : item.kind === "download"
+                        ? ui.resume
+                        : item.text}
+                  </span>
+                </a>
+              </li>
+            ))}
+            <li aria-hidden="true" class="flex items-center self-stretch">
+              <span class="h-8 w-px bg-[#8a8a8a]"></span>
+            </li>
+            <li>
+              <a
+                href={nextLocaleUrl}
+                data-lang-switch
+                aria-label={ui.switchTo}
+                title={ui.switchTo}
+                class="flex flex-col items-center gap-1 text-center text-xs leading-tight text-link visited:text-link"
+              >
+                <Image
+                  src="/icons/entire_network_globe-3.png"
+                  alt=""
+                  width={32}
+                  height={32}
+                  loading="eager"
+                  class="size-8 pixelated"
+                />
+                <span class="underline">{ui.switchLabel}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <nav aria-label={ui.navAria} class="win-bar sticky top-0 z-20 py-2.5">
+        <ul class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm leading-none sm:gap-x-0 sm:text-base">
+          {MENU.map((item, index) => {
+            const isCurrent = currentPath === item.href;
+            return (
+              <li class="flex items-center">
+                {index > 0 && (
+                  <span
+                    aria-hidden="true"
+                    class="hidden px-4 text-black sm:inline"
+                  >
+                    |
+                  </span>
+                )}
+                <a
+                  href={item.href}
+                  aria-current={isCurrent ? "page" : undefined}
+                  class="text-link underline visited:text-link"
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <main id="content" class="mt-3 flex-1">
+        <slot />
+      </main>
+
+      <footer class="win-bar mt-8 flex flex-col items-center gap-1 px-3 py-2.5 text-[15px] sm:flex-row sm:justify-between sm:gap-0">
+        <p class="sm:whitespace-nowrap">
+          © <span id="copyright-year"></span> {ui.footerRights}
+        </p>
+        <script is:inline>
+          const copyrightYear = document.getElementById("copyright-year");
+          if (copyrightYear) {
+            copyrightYear.textContent = String(new Date().getFullYear());
+          }
+        </script>
+        <p class="sm:whitespace-nowrap sm:text-right">{ui.lastUpdated}</p>
+      </footer>
+    </div>
+    <script is:inline>
+      document.querySelectorAll("[data-lang-switch]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const hash = window.location.hash;
+          if (!hash) {
+            return;
+          }
+          const href = link.getAttribute("href");
+          if (!href) {
+            return;
+          }
+          event.preventDefault();
+          window.location.href = href + hash;
+        });
+      });
+    </script>
+  </body>
+</html>

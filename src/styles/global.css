@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Verdana, Geneva, sans-serif;
+  --color-navy: #00156d;
+  --color-link: #0000ee;
+  --color-name-red: #c40a00;
+  --color-tagline: #9e1e1e;
+  --color-action: #1f5ec8;
+  --color-gold: #f4c62e;
+  --color-bar: #dcdcdc;
+}
+
+@utility graph-paper {
+  background-color: #f6f6f6;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+  background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px;
+  background-position: -1px -1px, -1px -1px, 0 0, 0 0;
+}
+
+@utility pixelated {
+  image-rendering: pixelated;
+}
+
+@utility win-bar {
+  background: var(--color-bar);
+}
+
+@utility win-well {
+  background: #f0f0f0;
+  border: 2px groove #c0c0c0;
+}
+
+@utility name-outline {
+  -webkit-text-stroke: 1px #fff;
+  text-shadow: 2px 2px 0 #8a8a8a;
+}
+
+@utility win-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 13rem;
+  border-width: 3px;
+  border-style: solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 0.45rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: inset 1px 1px 0 #fff;
+}
+

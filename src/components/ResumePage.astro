@@ -1,0 +1,206 @@
+---
+import { Image } from "astro:assets";
+import { getEducation } from "../data/education";
+import { getJobs } from "../data/jobs";
+import { getLanguages } from "../data/languages";
+import { getContacts, getProfile } from "../data/profile";
+import { getSkills, splitEmphasizedSkillText } from "../data/skills";
+import { getLocale } from "../i18n/locale";
+import { UI } from "../i18n/ui";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const locale = getLocale(Astro.currentLocale);
+const ui = UI[locale];
+const profile = getProfile(locale);
+const contacts = getContacts(locale);
+const jobs = getJobs(locale);
+const skills = getSkills(locale);
+const education = getEducation(locale);
+const languages = getLanguages(locale);
+---
+
+<BaseLayout
+  title={`${profile.name} | ${profile.title}`}
+  description={profile.summary[0]}
+>
+  <section id="about" class="mt-4 scroll-mt-4" aria-labelledby="about-heading">
+    <h2 id="about-heading" class="text-4xl font-bold tracking-tight">
+      {ui.about}
+    </h2>
+    <div class="mt-3 space-y-3 leading-snug">
+      {profile.summary.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+  </section>
+
+  <section
+    id="skills"
+    class="mt-8 scroll-mt-4"
+    aria-labelledby="skills-heading"
+  >
+    <h2 id="skills-heading" class="text-4xl font-bold tracking-tight">
+      {ui.skills}
+    </h2>
+    <ul
+      class="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 leading-snug sm:grid-cols-2 sm:grid-flow-col sm:[grid-template-rows:repeat(var(--skills-rows),auto)]"
+      style={`--skills-rows: ${Math.ceil(skills.length / 2)}`}
+    >
+      {skills.map((skill) => (
+        <li class="flex items-start gap-3">
+          <span class="size-8 shrink-0 overflow-hidden">
+            <Image
+              src={skill.icon}
+              alt=""
+              width={32}
+              height={32}
+              loading="eager"
+              class="pixelated size-8 max-w-none"
+            />
+          </span>
+          <p class="min-w-0 leading-snug">
+            <span class="block font-bold italic text-navy">{skill.label}</span>
+            {splitEmphasizedSkillText(skill.value).map((part) =>
+              part.isBold ? <strong>{part.text}</strong> : part.text,
+            )}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section
+    id="experience"
+    class="mt-8 scroll-mt-4"
+    aria-labelledby="experience-heading"
+  >
+    <h2 id="experience-heading" class="text-4xl font-bold tracking-tight">
+      {ui.experience}
+    </h2>
+    <div class="mt-6 space-y-6">
+      {jobs.map((job) => (
+        <article
+          id={job.id}
+          class="scroll-mt-4 border border-[#8a8a8a] bg-white"
+        >
+          <h3 class="bg-action px-3 py-1.5 font-bold text-white">
+            {job.cardTitle}
+          </h3>
+          <div class="space-y-3 px-4 py-4 leading-snug">
+            <div class="flex items-start gap-2">
+              <Image
+                src={job.logo}
+                alt=""
+                width={80}
+                height={80}
+                loading="eager"
+                class:list={[
+                  "size-20 shrink-0 border border-[#b5b5b5] object-contain p-2",
+                  job.logo.includes("/icons/") && "pixelated",
+                ]}
+              />
+              <div class="min-w-0 space-y-3">
+                <p>
+                  <span class="font-bold">{job.role}</span>
+                </p>
+                <p>
+                  {job.employer} ·{" "}
+                  <a
+                    href={job.href}
+                    class="text-link underline visited:text-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {job.label}
+                  </a>
+                  <br />
+                  {job.period} ({job.duration})
+                </p>
+              </div>
+            </div>
+            {job.summary.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+            <ul class="list-disc space-y-2 pl-5">
+              {job.points.map((point) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section
+    id="education"
+    class="mt-8 scroll-mt-4"
+    aria-labelledby="education-heading"
+  >
+    <h2 id="education-heading" class="text-4xl font-bold tracking-tight">
+      {ui.education}
+    </h2>
+    <div class="mt-3 space-y-3 leading-snug">
+      <p>
+        <span class="font-bold">{education.field}</span>
+      </p>
+      <p>{education.school}</p>
+      <p>{education.note}</p>
+    </div>
+    <ul class="mt-6 space-y-3 leading-snug">
+      {languages.map((language) => (
+        <li>
+          <span class="font-bold">{language.name}</span>: {language.level}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section
+    id="contacts"
+    class="mt-8 scroll-mt-4"
+    aria-labelledby="contacts-heading"
+  >
+    <h2 id="contacts-heading" class="text-4xl font-bold tracking-tight">
+      {ui.contacts}
+    </h2>
+    <p class="mt-3 leading-snug">{ui.contactsIntro}</p>
+    <ul class="mt-6 space-y-3 leading-snug">
+      {contacts.map((item) => (
+        <li class="flex items-center gap-3">
+          <Image
+            src={item.icon}
+            alt=""
+            width={32}
+            height={32}
+            loading="eager"
+            class="size-8 shrink-0 pixelated"
+          />
+          <p>
+            <span class="font-bold">
+              {item.kind === "mail"
+                ? ui.email
+                : item.kind === "download"
+                  ? ui.resume
+                  : item.text}
+              :
+            </span>{" "}
+            <a
+              href={item.href}
+              class="text-link underline visited:text-link"
+              target={item.kind === "external" ? "_blank" : undefined}
+              rel={item.kind === "external" ? "noopener noreferrer" : undefined}
+              download={item.kind === "download" ? item.download : undefined}
+            >
+              {item.kind === "mail"
+                ? item.text
+                : item.kind === "download"
+                  ? item.download
+                  : item.href}
+            </a>
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

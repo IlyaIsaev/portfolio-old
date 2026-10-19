@@ -1,0 +1,6 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { DEFAULT_LOCALE } from "../i18n/locale";
+
+return Astro.redirect(getRelativeLocaleUrl(DEFAULT_LOCALE), 301);
+---
