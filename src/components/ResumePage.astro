@@ -8,6 +8,7 @@ import { getSkills, splitEmphasizedSkillText } from "../data/skills";
 import { getLocale } from "../i18n/locale";
 import { UI } from "../i18n/ui";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../with-base";
 
 const locale = getLocale(Astro.currentLocale);
 const ui = UI[locale];
@@ -50,7 +51,7 @@ const languages = getLanguages(locale);
         <li class="flex items-start gap-3">
           <span class="size-8 shrink-0 overflow-hidden">
             <Image
-              src={skill.icon}
+              src={withBase(skill.icon)}
               alt=""
               width={32}
               height={32}
@@ -89,7 +90,7 @@ const languages = getLanguages(locale);
           <div class="space-y-3 px-4 py-4 leading-snug">
             <div class="flex items-start gap-2">
               <Image
-                src={job.logo}
+                src={withBase(job.logo)}
                 alt=""
                 width={80}
                 height={80}
@@ -169,7 +170,7 @@ const languages = getLanguages(locale);
       {contacts.map((item) => (
         <li class="flex items-center gap-3">
           <Image
-            src={item.icon}
+            src={withBase(item.icon)}
             alt=""
             width={32}
             height={32}
@@ -186,7 +187,7 @@ const languages = getLanguages(locale);
               :
             </span>{" "}
             <a
-              href={item.href}
+              href={withBase(item.href)}
               class="text-link underline visited:text-link"
               target={item.kind === "external" ? "_blank" : undefined}
               rel={item.kind === "external" ? "noopener noreferrer" : undefined}

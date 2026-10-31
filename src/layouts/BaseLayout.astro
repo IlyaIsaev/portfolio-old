@@ -4,6 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { getContacts, getProfile } from "../data/profile";
 import { getLocale } from "../i18n/locale";
 import { UI } from "../i18n/ui";
+import { withBase } from "../with-base";
 import "../styles/global.css";
 
 type Props = {
@@ -38,7 +39,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/png" href="/icons/internet_options-0.png" />
+    <link rel="icon" type="image/png" href={withBase("/icons/internet_options-0.png")} />
     <title>{title}</title>
   </head>
   <body class="graph-paper min-h-dvh font-sans text-black">
@@ -59,7 +60,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
               class="shrink-0"
             >
               <Image
-                src="/icons/internet_options_old_e-0.png"
+                src={withBase("/icons/internet_options_old_e-0.png")}
                 alt=""
                 width={72}
                 height={72}
@@ -81,7 +82,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
             {contacts.map((item) => (
               <li>
                 <a
-                  href={item.href}
+                  href={withBase(item.href)}
                   class="flex flex-col items-center gap-1 text-center text-xs leading-tight text-link visited:text-link"
                   target={item.kind === "external" ? "_blank" : undefined}
                   rel={
@@ -92,7 +93,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                   }
                 >
                   <Image
-                    src={item.icon}
+                    src={withBase(item.icon)}
                     alt=""
                     width={32}
                     height={32}
@@ -121,7 +122,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                 class="flex flex-col items-center gap-1 text-center text-xs leading-tight text-link visited:text-link"
               >
                 <Image
-                  src="/icons/entire_network_globe-3.png"
+                  src={withBase("/icons/entire_network_globe-3.png")}
                   alt=""
                   width={32}
                   height={32}

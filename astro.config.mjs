@@ -5,6 +5,7 @@ import { defineConfig, passthroughImageService } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   site: "https://ilyaisaev.github.io",
+  base: "/portfolio-old",
   image: { service: passthroughImageService() },
   i18n: {
     locales: ["en", "ru"],
